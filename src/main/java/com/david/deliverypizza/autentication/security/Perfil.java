@@ -17,7 +17,7 @@ public enum Perfil {
         return cod;
     }
 
-    public String getDescricao () {
+    public String getDescricao() {
         return descricao;
     }
 
@@ -33,7 +33,7 @@ public enum Perfil {
             }
         }
 
-        throw new IllegalArgumentException("Id invalido: " + cod);
+        throw new IllegalArgumentException("Id inválido: " + cod);
     }
 
 }

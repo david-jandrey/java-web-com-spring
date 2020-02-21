@@ -70,4 +70,3 @@ public class UserSS implements UserDetails {
         return getAuthorities().contains(new SimpleGrantedAuthority(perfil.getDescricao()));
     }
 }
-

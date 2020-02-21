@@ -14,6 +14,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.david.deliverypizza.autentication.SecurityConstants.HEADER_STRING;
+import static com.david.deliverypizza.autentication.SecurityConstants.TOKEN_PREFIX;
+
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     private JWTUtil jwtUtil;
@@ -31,9 +34,17 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                                     HttpServletResponse response,
                                     FilterChain chain) throws IOException, ServletException {
 
-        String header = request.getHeader("Authorization");
-        if (header != null && header.startsWith("Bearer ")) {
-            UsernamePasswordAuthenticationToken auth = getAuthentication(header.substring(7));
+
+        String authorization = request.getHeader(HEADER_STRING);
+
+        if (authorization == null || !authorization.startsWith(TOKEN_PREFIX)) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+
+        if (authorization != null && authorization.startsWith("Bearer ")) {
+            UsernamePasswordAuthenticationToken auth = getAuthentication(authorization.substring(7));
             if (auth != null) {
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }

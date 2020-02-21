@@ -6,22 +6,22 @@ import org.hibernate.validator.constraints.Length;
 import javax.persistence.*;
 import java.util.Objects;
 
+
 @Entity
 @Table(name = "USUARIOS", indexes = {
         @Index(name = "idx_usuarios_email",
                 columnList = "email", unique = true)
 }
 )
-
-@SequenceGenerator(sequenceName = "SEQ_USUARIOS", allocationSize = 1, name = "SEQ_USUARIOS")
+@SequenceGenerator(sequenceName = "SEQ_USUARIOS",
+        name = "SEQ_USUARIOS", allocationSize = 1)
 public class Usuario {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_USUARIOS")
     private Long id;
 
-    @Length(message = "O tamanho não pode ser maior que {max}", max = 10)
+    @Length(message = "O Tamanho não pode ser maior que {max}", max = 100)
     @Column(name = "NOME")
     private String nome;
 
@@ -31,12 +31,29 @@ public class Usuario {
     @Column(name = "SENHA")
     private String senha;
 
-
     @Column(name = "TELEFONE")
     private String telefone;
 
     @Column(name = "EMAIL", unique = true)
     private String email;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Usuario usuario = (Usuario) o;
+        return Objects.equals(id, usuario.id) &&
+                Objects.equals(nome, usuario.nome);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nome);
+    }
 
     public Long getId() {
         return id;
@@ -70,8 +87,8 @@ public class Usuario {
         this.nome = nome;
     }
 
-    public void setSobrenome(String sobremasa) {
-        this.sobrenome = sobremasa;
+    public void setSobrenome(String sobrenome) {
+        this.sobrenome = sobrenome;
     }
 
     public void setSenha(String senha) {
@@ -86,21 +103,14 @@ public class Usuario {
         this.email = email;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Usuario usuario = (Usuario) o;
-        return Objects.equals(id, usuario.id) &&
-                Objects.equals(email, usuario.email);
+    public Usuario() {
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, email);
+    public Usuario(String nome, String sobrenome, String senha, String telefone, String email) {
+        this.nome = nome;
+        this.sobrenome = sobrenome;
+        this.senha = senha;
+        this.telefone = telefone;
+        this.email = email;
     }
 }

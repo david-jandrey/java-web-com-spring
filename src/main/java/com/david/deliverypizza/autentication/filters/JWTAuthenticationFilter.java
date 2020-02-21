@@ -1,5 +1,6 @@
 package com.david.deliverypizza.autentication.filters;
 
+
 import com.david.deliverypizza.autentication.security.JWTUtil;
 import com.david.deliverypizza.autentication.security.UserSS;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,13 +11,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+
+import static com.david.deliverypizza.autentication.SecurityConstants.*;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -56,8 +58,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         String username = ((UserSS) auth.getPrincipal()).getUsername();
         String token = jwtUtil.generateToken(username);
-        res.addHeader("Authorization", "Bearer " + token);
-        res.addHeader("access-control-expose-headers", "Authorization");
+        res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
+        res.addHeader("access-control-expose-headers", HEADER_STRING);
     }
 
     private class JWTAuthenticationFailureHandler implements AuthenticationFailureHandler {
@@ -66,7 +68,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception)
                 throws IOException {
             response.setStatus(403);
-            response.setContentType("application/json");
+            response.setContentType(CONTENT_TYPE);
             response.getWriter().append(json());
         }
 
